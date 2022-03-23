@@ -14,12 +14,12 @@ class AveragePostNumberPerUserCalculator extends AbstractCalculator
     /**
      * @var array
      */
-    private $totals = [];
+    private $authors = [];
 
     /**
-     * @var array
+     * @var int
      */
-    private $authors = [];
+    private $postCount = 0;
 
     /**
      * @inheritDoc
@@ -29,7 +29,7 @@ class AveragePostNumberPerUserCalculator extends AbstractCalculator
         $key = $postTo->getAuthorId();
 
         $this->authors[$key] = $postTo->getAuthorName();
-        $this->totals[$key] = ($this->totals[$key] ?? 0) + 1;
+        $this->postCount++;
     }
 
     /**
@@ -37,19 +37,11 @@ class AveragePostNumberPerUserCalculator extends AbstractCalculator
      */
     protected function doCalculate(): StatisticsTo
     {
-        // TODO should I add sort by name here ?
-        $stats = new StatisticsTo();
-        foreach ($this->totals as $authorId => $total) {
-            $authorName = $this->authors[$authorId];
-            $child = (new StatisticsTo())
-                ->setName($this->parameters->getStatName())
-                ->setSplitPeriod($authorName)
-                ->setValue($total)
-                ->setUnits(self::UNITS);
+        $authorsCount = count($this->authors);
+        $value = $authorsCount > 0
+            ? $this->postCount / $authorsCount
+            : 0;
 
-            $stats->addChild($child);
-        }
-
-        return $stats;
+        return (new StatisticsTo())->setValue(round($value,2));
     }
 }
