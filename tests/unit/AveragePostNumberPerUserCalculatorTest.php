@@ -30,15 +30,19 @@ class AveragePostNumberPerUserCalculatorTest extends TestCase
     public function getTestCases(): array
     {
         return [
-            'empty posts => empty statistic'                        =>
+            'empty posts => empty statistic'                                  =>
                 $this->generateTestCase(d('2022-03-01'), d('2022-03-31'), [], stat(0)),
-            'there are no posts in March'                           =>
+            'there are no posts in March'                                     =>
                 $this->generateTestCase(d('2022-03-01'), d('2022-03-31'), $this->generatePosts(), stat(0)),
-            'there are 3 authors in January'                        =>
+            'there are 1 author with 1 post at January,01'                    =>
+                $this->generateTestCase(d('2022-01-01'), d('2022-01-01'), $this->generatePosts(), stat(1)),
+            'there are no posts in wrong period'                              =>
+                $this->generateTestCase(d('2022-02-01'), d('2022-01-01'), $this->generatePosts(), stat(0)),
+            'there are 3 authors with 7 posts in January'                     =>
                 $this->generateTestCase(d('2022-01-01'), d('2022-01-31'), $this->generatePosts(), stat(2.33)),
-            'there are 1 author in February'                        =>
+            'there are 1 author with 3 posts in February'                     =>
                 $this->generateTestCase(d('2022-02-01'), d('2022-02-28'), $this->generatePosts(), stat(3)),
-            'there are 2 authors in from January,20 to February,20' =>
+            'there are 2 authors with 5 posts from January,20 to February,20' =>
                 $this->generateTestCase(d('2022-01-20'), d('2022-02-20'), $this->generatePosts(), stat(2.5))
         ];
     }
